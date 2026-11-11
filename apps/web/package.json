@@ -1,0 +1,30 @@
+{
+  "name": "@nexa/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "dev": "vite --host 0.0.0.0",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "vitest run",
+    "test:e2e": "playwright test --config=../../tests/playwright.config.ts",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@capacitor/push-notifications": "8.1.3",
+    "@nexa/shared": "*"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.65.0",
+    "@sveltejs/adapter-static": "4.0.1",
+    "@sveltejs/kit": "3.2.0",
+    "@vitest/coverage-v8": "5.1.0",
+    "svelte": "5.57.3",
+    "svelte-check": "4.7.8",
+    "vite": "8.3.8",
+    "vitest": "5.1.0"
+  }
+}

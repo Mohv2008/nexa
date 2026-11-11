@@ -1,0 +1,32 @@
+{
+  "name": "nexa",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "backend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "bundle:budget": "node tests/bundle-budget.mjs",
+    "check": "npm run check --workspaces --if-present",
+    "dev:api": "npm run dev --workspace=@nexa/backend",
+    "dev:web": "npm run dev --workspace=@nexa/web",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run test --workspaces --if-present",
+    "test:e2e": "playwright test --config=tests/playwright.config.ts",
+    "test:coverage": "npm run test:coverage --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "prettier": "3.10.0",
+    "prettier-plugin-svelte": "4.1.1",
+    "typescript": "7.0.2"
+  }
+}

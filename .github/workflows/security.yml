@@ -1,0 +1,29 @@
+name: Security scans
+
+on:
+  schedule:
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: HTTPS staging URL for optional ZAP baseline
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  zap:
+    if: ${{ inputs.target != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: zaproxy/action-baseline@2b5fc7f98d837319798ab7f128ea50b7d40563b6 # v0.14.0
+        with:
+          target: ${{ inputs.target }}
+          fail_action: true
+          allow_issue_writing: false

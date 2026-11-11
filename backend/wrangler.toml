@@ -1,0 +1,33 @@
+name = "nexa-api"
+main = "src/index.ts"
+compatibility_date = "2026-11-11"
+workers_dev = true
+
+[observability]
+enabled = true
+head_sampling_rate = 0.1
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nexa-db"
+database_id = "60b3d95a-5522-4942-ba1a-89652bc1b83e"
+migrations_dir = "migrations"
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "nexa-media"
+preview_bucket_name = "nexa-media-preview"
+
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "RealtimeRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RealtimeRoom"]
+
+[vars]
+ALLOWED_ORIGINS = "http://localhost:5173,tauri://localhost,https://tauri.localhost"
+EMAIL_FROM = "NEXA <noreply@example.com>"
+HIBP_ENABLED = "true"
+WEB_URL = "http://localhost:5173"

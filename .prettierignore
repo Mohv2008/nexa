@@ -1,0 +1,10 @@
+node_modules
+build
+dist
+.svelte-kit
+coverage
+.wrangler
+apps/android/android
+apps/android/www
+apps/desktop/src-tauri/target
+package-lock.json

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "NEXA",
+  "version": "0.1.0",
+  "identifier": "app.nexa.community",
+  "build": {
+    "beforeDevCommand": "npm run dev --workspace=@nexa/web",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "npm run build --workspace=@nexa/web",
+    "frontendDist": "../../web/build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "NEXA",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 360,
+        "minHeight": 600,
+        "center": true,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true,
+        "visible": true
+      }
+    ],
+    "security": {
+      "capabilities": ["default"],
+      "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: data: blob: https:; media-src 'self' asset: blob: https:; connect-src 'self' ipc: http://ipc.localhost https://api.nexa.example wss://api.nexa.example http://localhost:8787 ws://localhost:8787"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "msi"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "createUpdaterArtifacts": true,
+    "category": "SocialNetworking",
+    "shortDescription": "Lightweight communities, social feed, and private chat",
+    "longDescription": "NEXA brings communities, private conversations, social posts, and small peer-to-peer voice rooms into one lightweight client.",
+    "copyright": "Copyright © 2026 NEXA contributors",
+    "publisher": "NEXA contributors",
+    "windows": {
+      "digestAlgorithm": "sha256",
+      "nsis": {
+        "installMode": "currentUser",
+        "compression": "lzma"
+      }
+    }
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["nexa"]
+      }
+    },
+    "updater": {
+      "endpoints": ["https://github.com/your-org/nexa/releases/latest/download/latest.json"],
+      "pubkey": "REPLACE_WITH_TAURI_UPDATER_PUBLIC_KEY"
+    }
+  }
+}

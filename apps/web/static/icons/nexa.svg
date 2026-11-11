@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="NEXA">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#a78bfa"/><stop offset="1" stop-color="#6d28d9"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="132" fill="#111218"/>
+  <path d="M128 370V142h51l154 151V142h51v228h-49L179 217v153z" fill="url(#g)"/>
+  <circle cx="384" cy="128" r="24" fill="#34d399"/>
+</svg>
