@@ -97,4 +97,7 @@ jobs:
         --lockfile=package-lock.json
         --recursive
         ./apps/desktop/src-tauri
-      upload-sarif: ${{ github.event_name != 'pull_request' || github.actor != 'dependabot[bot]' }}
+      # Code scanning requires GitHub Advanced Security, which is not available on
+      # this private repository, so the SARIF upload would fail the job. The scan
+      # itself still runs and still fails the build when vulnerabilities are found.
+      upload-sarif: false
