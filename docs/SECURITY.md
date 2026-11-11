@@ -20,9 +20,11 @@ private-media disclosure, supply-chain compromise, log leakage, and denial of wa
 
 ### Authentication and sessions
 
-- Passwords: PBKDF2-HMAC-SHA-256, random 128-bit salt, 310,000 iterations, constant-time compare.
+- Passwords: PBKDF2-HMAC-SHA-256, random 128-bit salt, 100,000 iterations, constant-time compare.
   Web Crypto is used because Workers does not provide native Argon2id. HIBP range API checks only
-  the first five SHA-1 hex characters and requests padded results.
+  the first five SHA-1 hex characters and requests padded results. 100,000 iterations is the
+  platform ceiling: Cloudflare Workers rejects higher PBKDF2 iteration counts with
+  `NotSupportedError`, so a larger value is not usable in production.
 - 12–128 characters with upper/lowercase and a number; generic registration/login/reset behavior,
   IP + account rate limits, exponential account lockout.
 - HS256 access JWT: explicit algorithm, `iss=nexa`, token type, session ID, JTI, issued/expiry checks,

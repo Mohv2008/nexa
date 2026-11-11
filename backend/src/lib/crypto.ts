@@ -2,7 +2,11 @@ import { constantTimeEqual } from '@nexa/shared';
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
-const PASSWORD_ITERATIONS = 310_000;
+// Cloudflare Workers caps Web Crypto PBKDF2 at 100,000 iterations and rejects
+// anything higher with NotSupportedError ("iteration counts above 100000 are
+// not supported"). 100,000 is therefore the strongest value the platform
+// allows; it is the value stored hashes are created with and re-verified at.
+const PASSWORD_ITERATIONS = 100_000;
 
 // TypeScript 7 distinguishes SharedArrayBuffer-backed views from Web Crypto's
 // ArrayBuffer-only BufferSource. Copy untrusted views before cryptographic use.

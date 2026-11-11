@@ -24,6 +24,16 @@ describe('authentication cryptography', () => {
     await expect(verifyPassword('anything', 'malformed')).resolves.toBe(false);
   });
 
+  it('defaults to a PBKDF2 iteration count the Workers runtime accepts', async () => {
+    // Cloudflare Workers rejects Web Crypto PBKDF2 above 100,000 iterations with
+    // NotSupportedError. Local test runtimes do not enforce that ceiling, so this
+    // guard is what stops a production-breaking value from being merged unnoticed.
+    const encoded = await hashPassword('Correct Horse 7 Battery');
+    const iterations = Number(encoded.split('$')[1]);
+    expect(iterations).toBeLessThanOrEqual(100_000);
+    expect(iterations).toBeGreaterThanOrEqual(100_000);
+  });
+
   it('signs, validates, expires, and rejects tampered JWTs', async () => {
     const token = await signAccessToken('usr_123', 'ses_123', 'a'.repeat(32), 900, 1_000);
     expect((await verifyAccessToken(token, 'a'.repeat(32), 1_001))?.sub).toBe('usr_123');
