@@ -43,7 +43,10 @@ export const openApi = {
       'Cloudflare Workers API for NEXA. Mutations authenticated by cookies also require X-CSRF-Token.',
     license: { name: 'MIT', identifier: 'MIT' },
   },
-  servers: [{ url: 'https://nexa-api.nexaapp.workers.dev/v1' }, { url: 'http://localhost:8787/v1' }],
+  servers: [
+    { url: 'https://nexa-api.nexaapp.workers.dev/v1' },
+    { url: 'http://localhost:8787/v1' },
+  ],
   tags: [
     { name: 'Auth' },
     { name: 'Social' },
