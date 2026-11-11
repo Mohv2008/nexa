@@ -1,0 +1,48 @@
+# OSV-Scanner suppression list for the CI `osv / osv-scan` job.
+#
+# Every entry is time-boxed with `ignoreUntil`. When that date passes, the
+# advisory re-surfaces in the scan and the job fails again, so each one has to
+# be either fixed or consciously re-accepted. Reasons state the actual
+# situation rather than claiming the advisory is harmless.
+#
+# None of these advisories are reachable from the deployed stack (SvelteKit PWA
+# on Cloudflare Pages + Workers API on D1/Durable Objects). The npm entry is a
+# build-time dependency; the crates.io entries are transitive dependencies of
+# the Tauri Linux integration, which the Windows desktop build does not use.
+#
+# Remediation path:
+#   - deepmerge: no fixed version exists upstream (4.3.1 is the latest release).
+#     It arrives through @sveltejs/vite-plugin-svelte as a dev dependency and
+#     is not shipped in the PWA bundle.
+#   - crates.io entries: run `cargo update` in apps/desktop/src-tauri with
+#     Rust 1.90+ and re-run the scan.
+
+[[IgnoredVulns]]
+id = "GHSA-gcqx-w48m-w2h4"
+ignoreUntil = 2027-02-01
+reason = "deepmerge 4.3.1 (npm, dev-only, via @sveltejs/vite-plugin-svelte). No fixed version is published upstream; it is not part of the deployed bundle."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0429"
+ignoreUntil = 2027-02-01
+reason = "glib 0.18.5 (crates.io, transitive via the Tauri Linux integration). Not used by the Windows desktop build; awaiting `cargo update`."
+
+[[IgnoredVulns]]
+id = "GHSA-wrw7-89jp-8q8g"
+ignoreUntil = 2027-02-01
+reason = "proc-macro-error 1.0.4 (crates.io, build-time macro helper). Not reachable at runtime; awaiting `cargo update`."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0371"
+ignoreUntil = 2027-02-01
+reason = "zbus_names 4.3.5 (crates.io, transitive via the Tauri Linux integration). Not used by the Windows desktop build; awaiting `cargo update`."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0370"
+ignoreUntil = 2027-02-01
+reason = "zvariant 5.15.1 (crates.io, transitive via the Tauri Linux integration). Not used by the Windows desktop build; awaiting `cargo update`."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0372"
+ignoreUntil = 2027-02-01
+reason = "zvariant_derive 5.15.1 (crates.io, transitive via the Tauri Linux integration). Not used by the Windows desktop build; awaiting `cargo update`."

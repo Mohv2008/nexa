@@ -96,6 +96,7 @@ jobs:
       scan-args: |-
         --lockfile=package-lock.json
         --recursive
+        --config=./osv-scanner.toml
         ./apps/desktop/src-tauri
       # Code scanning requires GitHub Advanced Security, which is not available on
       # this private repository, so the SARIF upload would fail the job. The scan
