@@ -33,6 +33,11 @@ ignoreUntil = 2027-02-01
 reason = "proc-macro-error 1.0.4 (crates.io, build-time macro helper). Not reachable at runtime; awaiting `cargo update`."
 
 [[IgnoredVulns]]
+id = "RUSTSEC-2024-0370"
+ignoreUntil = 2027-02-01
+reason = "proc-macro-error 1.0.4 (crates.io, build-time macro helper). Same advisory as GHSA-wrw7-89jp-8q8g, tracked separately because the scanner resolves the two records independently."
+
+[[IgnoredVulns]]
 id = "RUSTSEC-2026-0371"
 ignoreUntil = 2027-02-01
 reason = "zbus_names 4.3.5 (crates.io, transitive via the Tauri Linux integration). Not used by the Windows desktop build; awaiting `cargo update`."
