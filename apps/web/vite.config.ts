@@ -8,6 +8,11 @@ const apiOrigin = new URL(configuredApi).origin as CspHost;
 const websocketOrigin = apiOrigin.replace(/^http/u, 'ws') as CspHost;
 
 export default defineConfig({
+  // SvelteKit 3 does not set a Vite env prefix, so `import.meta.env.PUBLIC_*`
+  // would resolve to undefined and every app-side fetch would silently fall back
+  // to http://localhost:8787/v1. Declaring the prefix makes Vite expose the
+  // PUBLIC_* variables to the client bundle from process.env and .env files.
+  envPrefix: 'PUBLIC_',
   plugins: [
     sveltekit({
       adapter: adapter({ fallback: '200.html', precompress: true, strict: true }),
