@@ -27,7 +27,7 @@ tag = "v1"
 new_sqlite_classes = ["RealtimeRoom"]
 
 [vars]
-ALLOWED_ORIGINS = "http://localhost:5173,tauri://localhost,https://tauri.localhost"
+ALLOWED_ORIGINS = "http://localhost:5173,tauri://localhost,https://tauri.localhost,https://nexa-bau.pages.dev"
 EMAIL_FROM = "NEXA <noreply@example.com>"
 HIBP_ENABLED = "true"
-WEB_URL = "http://localhost:5173"
+WEB_URL = "https://nexa-bau.pages.dev"
