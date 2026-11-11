@@ -33,6 +33,17 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: backend
           command: d1 migrations apply nexa-db --remote
+      - name: Ensure R2 buckets exist
+        run: |
+          set -euo pipefail
+          for bucket in nexa-media nexa-media-preview; do
+            if ! npx wrangler r2 bucket list | grep -q "$bucket"; then
+              npx wrangler r2 bucket create "$bucket"
+            fi
+          done
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       - name: Deploy API
         uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
         with:
