@@ -7,12 +7,15 @@ import {
   type S3Credentials,
 } from './s3';
 
+// Placeholder credentials only. They are never sent anywhere: the tests below
+// either stub `fetch` or assert on the signature, and the canonical AWS vector
+// uses the published example key that upstream already allowlists.
 const credentials: S3Credentials = {
   endpoint: 'https://s3.us-west-004.backblazeb2.com',
   region: 'us-west-004',
   bucket: 'nexa-media',
   accessKeyId: '0058a1b2c3d4e5f6',
-  secretAccessKey: 'K7Hn2mQ9tYvB1xZ0pL4sR6wE8gJ3uN5cA7dF9hI2kM4',
+  secretAccessKey: 'not-a-real-secret-0123456789abcdef',
 };
 
 describe('encodePathSegment', () => {
