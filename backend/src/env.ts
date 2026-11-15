@@ -2,7 +2,20 @@ import type { UserSummary } from '@nexa/shared';
 
 export interface Bindings {
   DB: D1Database;
-  MEDIA: R2Bucket;
+  /** Optional Cloudflare R2 bucket, used when the R2 backend is selected. */
+  MEDIA?: R2Bucket;
+  /** Optional override for backend selection (`b2` or `r2`). */
+  MEDIA_BACKEND?: string;
+  /** Backblaze B2 S3-compatible endpoint, e.g. https://s3.us-west-004.backblazeb2.com */
+  B2_ENDPOINT?: string;
+  /** Backblaze B2 region identifier, e.g. us-west-004 */
+  B2_REGION?: string;
+  /** Backblaze B2 bucket name. */
+  B2_BUCKET?: string;
+  /** Backblaze B2 application key id. */
+  B2_ACCESS_KEY_ID?: string;
+  /** Backblaze B2 application key secret. */
+  B2_SECRET_ACCESS_KEY?: string;
   ROOMS: DurableObjectNamespace;
   JWT_SECRET: string;
   DATA_ENCRYPTION_KEY: string;

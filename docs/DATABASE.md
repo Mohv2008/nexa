@@ -36,7 +36,7 @@ erDiagram
 - One `@everyone` role is allowed per server; owners are evaluated as administrators server-side.
 - Refresh token hashes and one previous hash are unique. Seeing the previous token revokes every
   active session for that account.
-- Deleting a user cascades authored relational data. R2 objects are explicitly deleted before the
+- Deleting a user cascades authored relational data. Media objects are explicitly deleted before the
   user row because object storage is not relational.
 - Soft-deleted messages preserve ordering/replies but lose content, attachments, and reactions.
 

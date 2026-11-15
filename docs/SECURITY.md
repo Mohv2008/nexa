@@ -9,7 +9,7 @@ vulnerability in a public issue until the operator confirms a disclosure path.
 community roles, and availability/free-tier quota.
 
 **Untrusted inputs:** every browser/WebView value, URL parameter, JSON/WebSocket frame, upload,
-Origin, OAuth/email callback, filename, and ID. The Worker, D1/R2 bindings, and configured secrets
+Origin, OAuth/email callback, filename, and ID. The Worker, D1 and object-storage bindings, and configured secrets
 form the server trust boundary. Community moderators are privileged only inside their server.
 
 **Primary threats:** credential stuffing, refresh-token theft/replay, CSRF, XSS, IDOR/BOLA,
@@ -61,6 +61,9 @@ private-media disclosure, supply-chain compromise, log leakage, and denial of wa
   stripping. SVG/HTML and executable formats are rejected. Non-media downloads use attachment
   disposition and every response has `nosniff` plus sandbox CSP.
 - The browser re-encodes still images to WebP before upload, removing EXIF/GPS in normal use.
+- Media lives in a private Backblaze B2 bucket. The Worker authenticates with AWS Signature V4 using a
+  bucket-scoped application key held only as a Worker secret; the bucket never becomes public and
+  object keys alone never grant access. Rotate the application key if it is ever exposed.
 
 ### Transport, realtime, and platform
 

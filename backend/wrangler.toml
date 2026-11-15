@@ -13,10 +13,18 @@ database_name = "nexa-db"
 database_id = "60b3d95a-5522-4942-ba1a-89652bc1b83e"
 migrations_dir = "migrations"
 
-[[r2_buckets]]
-binding = "MEDIA"
-bucket_name = "nexa-media"
-preview_bucket_name = "nexa-media-preview"
+# Media storage uses Backblaze B2 through its S3-compatible API by default,
+# which keeps the free 10 GB allowance without requiring a payment method on
+# Cloudflare. The B2_* values are Worker secrets (wrangler secret put) and are
+# therefore never stored in this file.
+#
+# Optional alternative: attach a Cloudflare R2 bucket by uncommenting the block
+# below and setting MEDIA_BACKEND = "r2" in [vars].
+#
+# [[r2_buckets]]
+# binding = "MEDIA"
+# bucket_name = "nexa-media"
+# preview_bucket_name = "nexa-media-preview"
 
 [[durable_objects.bindings]]
 name = "ROOMS"
@@ -31,3 +39,4 @@ ALLOWED_ORIGINS = "http://localhost:5173,tauri://localhost,https://tauri.localho
 EMAIL_FROM = "NEXA <noreply@example.com>"
 HIBP_ENABLED = "true"
 WEB_URL = "https://nexa-bau.pages.dev"
+MEDIA_BACKEND = "b2"

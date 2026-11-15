@@ -13,7 +13,7 @@
 
 NEXA is an MIT-licensed, Discord-first community platform with a social feed and direct messaging.
 One Svelte codebase ships as a static PWA, a Capacitor Android app, and a low-overhead Tauri Windows
-app. The API runs on Cloudflare Workers, Durable Objects, D1, and R2.
+app. The API runs on Cloudflare Workers, Durable Objects, D1, and Backblaze B2 object storage.
 
 <p align="center">
   <img src="docs/screenshots/landing.png" width="98%" alt="NEXA animated download landing page" />
@@ -34,7 +34,7 @@ app. The API runs on Cloudflare Workers, Durable Objects, D1, and R2.
 - Hibernatable Durable Object WebSockets and WebRTC audio mesh rooms capped at six peers.
 - Dark/light themes, low-power mode, installable/offline shell, keyboard shortcuts, English/Arabic
   RTL, responsive layouts, semantic labels, focus styles, and virtualized chat rows.
-- Metadata-stripped, magic-byte-checked uploads; Cloudflare R2 authorization checks; Android FCM;
+- Metadata-stripped, magic-byte-checked uploads; object-storage authorization checks; Android FCM;
   strict Worker/Pages/Tauri/Android security configuration.
 
 ## Repository
@@ -44,7 +44,7 @@ apps/web/          SvelteKit static PWA — the only UI source
 apps/android/      Capacitor wrapper and generated Gradle project
 apps/desktop/      Tauri 2 Rust wrapper and Windows bundler config
 packages/shared/   schemas, domain types, permissions, constants
-backend/           Workers API, Durable Object, D1 migrations, R2 media
+backend/           Workers API, Durable Object, D1 migrations, B2 media store
 tests/             Playwright E2E, bundle budget, and k6 load scripts
 docs/              setup, architecture, security, operations, reports
 .github/workflows/ pinned CI, deploy, and native release workflows

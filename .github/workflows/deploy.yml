@@ -33,17 +33,27 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: backend
           command: d1 migrations apply nexa-db --remote
-      - name: Ensure R2 buckets exist
+      - name: Verify media storage credentials
         run: |
           set -euo pipefail
-          for bucket in nexa-media nexa-media-preview; do
-            if ! npx wrangler r2 bucket list | grep -q "$bucket"; then
-              npx wrangler r2 bucket create "$bucket"
+          missing=0
+          for name in B2_ENDPOINT B2_REGION B2_BUCKET B2_ACCESS_KEY_ID B2_SECRET_ACCESS_KEY; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::Missing required secret $name"
+              missing=1
             fi
           done
+          if [ "$missing" -ne 0 ]; then
+            echo "Media storage is Backblaze B2 (10 GB free, no card). Add the secrets listed above."
+            exit 1
+          fi
+          echo "Backblaze B2 credentials present for bucket $B2_BUCKET ($B2_REGION)"
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          B2_ENDPOINT: ${{ secrets.B2_ENDPOINT }}
+          B2_REGION: ${{ secrets.B2_REGION }}
+          B2_BUCKET: ${{ secrets.B2_BUCKET }}
+          B2_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
+          B2_SECRET_ACCESS_KEY: ${{ secrets.B2_SECRET_ACCESS_KEY }}
       - name: Deploy API
         uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
         with:
@@ -51,6 +61,30 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: backend
           command: deploy
+          secret: |
+            B2_ENDPOINT=${{ secrets.B2_ENDPOINT }}
+            B2_REGION=${{ secrets.B2_REGION }}
+            B2_BUCKET=${{ secrets.B2_BUCKET }}
+            B2_ACCESS_KEY_ID=${{ secrets.B2_ACCESS_KEY_ID }}
+            B2_SECRET_ACCESS_KEY=${{ secrets.B2_SECRET_ACCESS_KEY }}
+      - name: Verify deployed API health
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            if body="$(curl -fsS "${PUBLIC_API_URL%/v1}/health" 2>/dev/null)"; then
+              echo "$body"
+              echo "$body" | grep -q '"media":"b2"' || {
+                echo "::error::Media backend is not b2"
+                exit 1
+              }
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::API health check failed"
+          exit 1
+        env:
+          PUBLIC_API_URL: ${{ secrets.PUBLIC_API_URL }}
       - run: npm run build --workspace=@nexa/web
         env:
           PUBLIC_API_URL: ${{ secrets.PUBLIC_API_URL }}

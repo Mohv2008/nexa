@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import type { AppEnv } from '../env';
 import { authenticate, requireCsrf, resolveAuthentication } from '../lib/auth';
 import { ApiError } from '../lib/errors';
+import { createMediaStoreFromEnv } from '../lib/media-store';
 import { inspectAndSanitize } from '../lib/media';
 import { enforceRateLimit } from '../lib/rate-limit';
 
@@ -51,13 +52,11 @@ uploads.post('/uploads', authenticate, requireCsrf, async (context) => {
   const date = new Date().toISOString().slice(0, 10);
   const objectKey = `${user.id}/${date}/${crypto.randomUUID()}.${inspected.extension}`;
   const originalName = safeFilename(part.name) || `upload.${inspected.extension}`;
-  await context.env.MEDIA.put(objectKey, inspected.bytes, {
-    httpMetadata: {
-      contentType: inspected.mime,
-      contentDisposition: `attachment; filename="${originalName.replace(/["\\]/g, '_')}"`,
-      cacheControl: 'private, max-age=31536000, immutable',
-    },
-    customMetadata: { owner: user.id, uploadId },
+  await createMediaStoreFromEnv(context.env).put(objectKey, inspected.bytes, {
+    contentType: inspected.mime,
+    contentDisposition: `attachment; filename="${originalName.replace(/["\\]/g, '_')}"`,
+    cacheControl: 'private, max-age=31536000, immutable',
+    metadata: { owner: user.id, uploadId },
   });
   try {
     await context.env.DB.prepare(
@@ -67,7 +66,7 @@ uploads.post('/uploads', authenticate, requireCsrf, async (context) => {
       .bind(uploadId, user.id, objectKey, originalName, inspected.mime, inspected.bytes.byteLength)
       .run();
   } catch (error) {
-    await context.env.MEDIA.delete(objectKey);
+    await createMediaStoreFromEnv(context.env).delete(objectKey);
     throw error;
   }
   return context.json(
@@ -135,11 +134,10 @@ uploads.get('/media/*', async (context) => {
       if (!permitted) throw new ApiError('not_found', 'Media not found.', 404);
     }
   }
-  const object = await context.env.MEDIA.get(upload.object_key);
+  const object = await createMediaStoreFromEnv(context.env).get(upload.object_key);
   if (!object) throw new ApiError('not_found', 'Media not found.', 404);
   const headers = new Headers();
-  object.writeHttpMetadata(headers);
-  headers.set('ETag', object.httpEtag);
+  headers.set('ETag', object.etag);
   headers.set('Content-Type', upload.mime_type);
   headers.set('X-Content-Type-Options', 'nosniff');
   headers.set('Content-Security-Policy', "default-src 'none'; sandbox");

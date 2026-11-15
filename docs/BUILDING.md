@@ -19,11 +19,9 @@ Do not use example secrets, commit `.dev.vars`, or expose Wrangler on a public i
 2. Install/authenticate Wrangler: `npx wrangler login`.
 3. Create D1: `npx wrangler d1 create nexa-db`. Put its returned UUID in
    `backend/wrangler.toml` instead of the all-zero placeholder.
-4. Create R2 buckets: `npx wrangler r2 bucket create nexa-media` and
-   `npx wrangler r2 bucket create nexa-media-preview`.
-5. Apply remote migrations:
+4. Create the media bucket (see section 2a) and apply remote migrations:
    `npm run db:migrate:remote --workspace=@nexa/backend`.
-6. Store secrets (repeat per name):
+5. Store secrets (repeat per name):
 
    ```bash
    cd backend
@@ -32,11 +30,39 @@ Do not use example secrets, commit `.dev.vars`, or expose Wrangler on a public i
    npx wrangler secret put INTERNAL_SECRET
    npx wrangler secret put RESEND_API_KEY
    npx wrangler secret put FIREBASE_PRIVATE_KEY
+   npx wrangler secret put B2_ENDPOINT
+   npx wrangler secret put B2_REGION
+   npx wrangler secret put B2_BUCKET
+   npx wrangler secret put B2_ACCESS_KEY_ID
+   npx wrangler secret put B2_SECRET_ACCESS_KEY
    ```
 
-7. Change `ALLOWED_ORIGINS` and `WEB_URL` in `wrangler.toml` to real HTTPS origins. Change the CSP
+6. Change `ALLOWED_ORIGINS` and `WEB_URL` in `wrangler.toml` to real HTTPS origins. Change the CSP
    API placeholder in `apps/web/vite.config.ts`, `static/_headers`, and the Tauri config.
-8. Deploy API: `npm run deploy --workspace=@nexa/backend`. Verify `/health`.
+7. Deploy API: `npm run deploy --workspace=@nexa/backend`. Verify `/health` reports `"media":"b2"`.
+
+## 2a. Media storage: Backblaze B2 (free, no card)
+
+NEXA stores uploads in [Backblaze B2](https://www.backblaze.com/cloud-storage/pricing) through its
+S3-compatible API. The first 10 GB is free indefinitely and signing up does not require a credit
+card, which keeps the whole stack on free tiers. Cloudflare R2 remains supported as an alternative
+backend (see `backend/wrangler.toml`).
+
+1. Create a Backblaze account and enable B2 Cloud Storage. Choose the region carefully; it cannot be
+   changed later.
+2. Create a **private** bucket, for example `nexa-media`. Keep it private: NEXA authorizes reads
+   itself through `/v1/media/*`.
+3. Create an **application key** limited to that bucket with _Read & Write_ and _Delete_ permissions.
+   Copy the `keyID` and `applicationKey` — the application key is shown only once.
+4. Copy the bucket **Endpoint** from the bucket details page and strip the bucket path, leaving the
+   origin only, for example `https://s3.us-west-004.backblazeb2.com`. The region identifier is the
+   middle segment (`us-west-004`).
+5. Set the five `B2_*` Worker secrets listed above. `B2_ENDPOINT`/`B2_REGION`/`B2_BUCKET` are not
+   sensitive but are stored as secrets so a single mechanism covers every value.
+6. The deploy pipeline expects the same five values as GitHub Actions secrets
+   (`B2_ENDPOINT`, `B2_REGION`, `B2_BUCKET`, `B2_ACCESS_KEY_ID`, `B2_SECRET_ACCESS_KEY`).
+7. Rotate the application key if it is ever exposed; a key limited to one bucket can still delete
+   every object in it.
 
 ## 3. Deploy the PWA to Pages
 

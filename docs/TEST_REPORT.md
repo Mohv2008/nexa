@@ -10,8 +10,8 @@ passing or replaced with invented numbers.
 | Gate                                   | Result                                                                 |
 | -------------------------------------- | ---------------------------------------------------------------------- |
 | Shared unit tests                      | **9/9 passed**, 3 files                                                |
-| Worker unit/integration/security tests | **35/35 passed**, 9 files, real `workerd` + isolated D1/R2/DO bindings |
-| Backend coverage                       | **81.21% statements, 83.50% lines, 87.87% functions, 76.43% branches** |
+| Worker unit/integration/security tests | **57/57 passed**, 11 files, real `workerd` + isolated D1/DO bindings   |
+| Backend coverage                       | **84.37% statements, 86.87% lines, 89.92% functions, 78.09% branches** |
 | Shared coverage                        | **86.11% statements, 89.06% lines, 85.71% functions, 72.41% branches** |
 | Svelte strict diagnostics              | **0 errors, 0 warnings**                                               |
 | Backend TypeScript strict diagnostics  | **passed**                                                             |
@@ -64,7 +64,7 @@ than hidden; improve them toward 80% as adapters gain test fixtures.
 | Browser/Android/Windows one-hour leak | requires each runtime and profiler                                                             |
 | Voice across restrictive NAT/TURN     | needs two networks and optional TURN configuration                                             |
 | Push delivery                         | needs real VAPID/Firebase credentials and devices                                              |
-| Backup/restore remote D1/R2           | local migration proven; remote account not provided                                            |
+| Backup/restore remote D1/media        | local migration proven; remote account not provided                                            |
 
 ## Required measurement procedure
 

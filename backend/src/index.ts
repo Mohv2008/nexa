@@ -4,6 +4,7 @@ import type { AppEnv } from './env';
 import { RealtimeRoom } from './durable/realtime-room';
 import { ApiError } from './lib/errors';
 import { corsAndOrigin, noStore, requestContext, securityHeaders } from './lib/http';
+import { describeMediaStore } from './lib/media-store';
 import { openApi } from './openapi';
 import admin from './routes/admin';
 import auth from './routes/auth';
@@ -39,6 +40,7 @@ app.get('/health', async (context) => {
     service: 'nexa-api',
     timestamp: new Date().toISOString(),
     database: 'ok',
+    media: describeMediaStore(context.env),
     latencyMs: Math.round(performance.now() - started),
   });
 });

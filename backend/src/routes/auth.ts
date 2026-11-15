@@ -21,6 +21,7 @@ import {
   requireCsrf,
   setSessionCookies,
 } from '../lib/auth';
+import { createMediaStoreFromEnv } from '../lib/media-store';
 import {
   base32Encode,
   decryptText,
@@ -661,7 +662,8 @@ auth.delete('/me', authenticate, requireCsrf, async (context) => {
   const uploads = await context.env.DB.prepare('SELECT object_key FROM uploads WHERE owner_id = ?')
     .bind(userId)
     .all<{ object_key: string }>();
-  await Promise.all(uploads.results.map((upload) => context.env.MEDIA.delete(upload.object_key)));
+  const store = createMediaStoreFromEnv(context.env);
+  await Promise.all(uploads.results.map((upload) => store.delete(upload.object_key)));
   await context.env.DB.prepare('DELETE FROM users WHERE id = ?').bind(userId).run();
   clearSessionCookies(context);
   return context.body(null, 204);

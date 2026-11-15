@@ -13,7 +13,7 @@ flowchart LR
   PWA & AND & WIN <-->|WSS| DO[SQLite Durable Object per room]
   W --> D1[(Cloudflare D1)]
   DO --> D1
-  W --> R2[(Private R2 media)]
+  W --> B2[(Private Backblaze B2 media)]
   W --> HIBP[HIBP k-anonymity]
   W --> RESEND[Resend email]
   W --> FCM[Firebase Cloud Messaging]
@@ -27,8 +27,8 @@ flowchart LR
 - **Worker + D1:** relational constraints and indexed cursor queries keep authorization explicit.
 - **One hibernatable Durable Object per room:** ordering, presence, typing, signaling, and fan-out
   without polling. Every event re-checks the D1 session and room membership.
-- **R2 private by default:** random object keys are not considered authorization. `/v1/media/*`
-  checks profile/post visibility, ownership, or message-room membership before reading R2.
+- **Object storage private by default:** random object keys are not considered authorization. `/v1/media/*`
+  checks profile/post visibility, ownership, or message-room membership before reading the object.
 - **P2P voice:** avoids a permanently running media server for rooms up to six. TURN/SFU is an
   optional deployment upgrade.
 - **Cookie-first auth:** WebViews use the system-protected cookie jar; JavaScript never persists
@@ -59,7 +59,7 @@ flowchart LR
 | Failure                  | Behavior                                                                             |
 | ------------------------ | ------------------------------------------------------------------------------------ |
 | D1 daily limit           | API returns a service error; no data is silently dropped                             |
-| R2 unavailable           | upload/read fails; D1 row is rolled back on failed upload metadata insert            |
+| Media store unavailable  | upload/read fails; D1 row is rolled back on failed upload metadata insert            |
 | Durable Object reconnect | client backs off; message nonces make retries idempotent                             |
 | Email provider missing   | account works unverified; verification API returns accepted without leaking accounts |
 | FCM missing              | in-app notifications remain; push delivery is skipped                                |
