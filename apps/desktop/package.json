@@ -10,7 +10,7 @@
     "icon": "tauri icon ../web/static/icons/nexa.svg"
   },
   "dependencies": {
-    "@tauri-apps/api": "2.12.4"
+    "@tauri-apps/api": "2.12.5"
   },
   "devDependencies": {
     "@tauri-apps/cli": "2.12.4"
